@@ -1,0 +1,2 @@
+[console_scripts]
+aminscan = aminscan.cli:main
