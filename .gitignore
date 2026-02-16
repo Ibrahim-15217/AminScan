@@ -1,5 +1,10 @@
+# AminScan local artifacts
 aminscan-report.md
+
+# NEVER commit secret-like test files
 test_secrets.txt
 test_secrets2.txt
+
+# Python junk
 __pycache__/
 .venv/
