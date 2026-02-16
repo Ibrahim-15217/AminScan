@@ -29,6 +29,27 @@ RULES: list[SecretRule] = [
         recommendation="Revoke the token in GitHub settings and rotate credentials.",
     ),
     SecretRule(
+        id="SEC-GOOGLE-API-KEY",
+        title="Possible Google API key",
+        severity="high",
+        pattern=re.compile(r"\bAIza[0-9A-Za-z\-_]{35}\b"),
+        recommendation="Restrict and rotate the key in your cloud console; remove it from git history.",
+    ),
+    SecretRule(
+        id="SEC-SLACK-TOKEN",
+        title="Possible Slack token",
+        severity="high",
+        pattern=re.compile(r"\bxox[baprs]-[0-9A-Za-z-]{10,}\b"),
+        recommendation="Revoke the token in Slack, rotate secrets, and purge from git history.",
+    ),
+    SecretRule(
+        id="SEC-JWT",
+        title="Possible JWT token",
+        severity="medium",
+        pattern=re.compile(r"\beyJ[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,}\b"),
+        recommendation="Treat as sensitive: invalidate sessions/rotate signing keys if exposed.",
+    ),
+    SecretRule(
         id="SEC-PRIVATE-KEY",
         title="Private key material detected",
         severity="critical",

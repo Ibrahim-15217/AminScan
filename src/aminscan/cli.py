@@ -28,7 +28,10 @@ def render_markdown(findings: list[dict]) -> str:
 
     for i, f in enumerate(findings, 1):
         lines.append(f"## {i}. {f['title']}")
+
+        conf = f.get("confidence", "high").upper()
         lines.append(f"- Severity: **{f['severity'].upper()}**")
+        lines.append(f"- Confidence: **{conf}**")
         lines.append(f"- Location: `{f['file']}:{f['line']}`")
         lines.append(f"- Evidence (masked): `{f['evidence_masked']}`")
         lines.append(f"- Fix: {f['recommendation']}\n")
@@ -67,6 +70,7 @@ def main() -> None:
             print(f"- [{f['severity'].upper()}] {f['title']}")
             print(f"  File: {f['file']}:{f['line']}")
             print(f"  Evidence: {f['evidence_masked']}")
+            print(f"  Confidence: {f.get('confidence', 'high').upper()}")
             print(f"  Fix: {f['recommendation']}\n")
 
     # Markdown report output (CI-friendly)
