@@ -7,8 +7,7 @@ from .entropy import TOKEN_RE, looks_like_high_entropy_token
 from .file_utils import iter_text_files, load_ignore_patterns
 from .secrets_rules import RULES
 
-
-def scan_secrets(base: Path) -> List[Dict[str, Any]]:
+def scan_secrets(base: Path, use_entropy: bool = True) -> List[Dict[str, Any]]:
     findings: List[Dict[str, Any]] = []
     ignore = load_ignore_patterns(base)
     files = list(iter_text_files(base, ignore))
@@ -50,21 +49,34 @@ def scan_secrets(base: Path) -> List[Dict[str, Any]]:
                     "recommendation": rule.recommendation,
                 })
 
-            # 2) Medium-confidence entropy rule (catch unknown tokens)
-            for tok in TOKEN_RE.findall(line):
-                if looks_like_high_entropy_token(tok):
-                    findings.append({
-                        "rule_id": "SEC-ENTROPY-TOKEN",
-                        "title": "Possible high-entropy secret/token (heuristic)",
-                        "severity": "medium",
-                        "confidence": "medium",
-                        "file": str(fp),
-                        "line": line_no,
-                        "evidence_masked": mask_evidence(tok),
-                        "recommendation": "If this is a real secret, rotate it and move it to environment variables/secret manager.",
-                    })
+            # 2) Medium-confidence entropy rule (optional)
+            if use_entropy:
+                for tok in TOKEN_RE.findall(line):
+                    if looks_like_high_entropy_token(tok):
+                        findings.append({
+                            "rule_id": "SEC-ENTROPY-TOKEN",
+                            "title": "Possible high-entropy secret/token (heuristic)",
+                            "severity": "medium",
+                            "confidence": "medium",
+                            "file": str(fp),
+                            "line": line_no,
+                            "evidence_masked": mask_evidence(tok),
+                            "recommendation": "If this is a real secret, rotate it and move it to environment variables/secret manager.",
+                        })
 
-    return findings
+    # Deduplicate findings (avoid repeated entries)
+    seen = set()
+    unique: List[Dict[str, Any]] = []
+    for f in findings:
+        key = (f.get("rule_id"), f.get("file"), f.get("line"), f.get("evidence_masked"))
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(f)
+
+    return unique
+
+
 
 
 def mask_evidence(val: str) -> str:
