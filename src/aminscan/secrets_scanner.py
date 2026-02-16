@@ -1,34 +1,35 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, List
 
+from .file_utils import iter_text_files, load_ignore_patterns
 from .secrets_rules import RULES
-
-
-TEXT_EXTS = {
-    ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".go", ".rb", ".php", ".cs",
-    ".html", ".css", ".json", ".yml", ".yaml", ".toml", ".env", ".txt", ".md",
-    ".ini", ".cfg"
-}
-
-
-def iter_candidate_files(base: Path) -> Iterable[Path]:
-    # Keep it simple for now: scan files with known text extensions
-    for p in base.rglob("*"):
-        if p.is_file() and (p.suffix.lower() in TEXT_EXTS or p.name == ".env"):
-            yield p
 
 
 def scan_secrets(base: Path) -> List[Dict[str, Any]]:
     findings: List[Dict[str, Any]] = []
+    ignore = load_ignore_patterns(base)
 
-    for fp in iter_candidate_files(base):
+    files = list(iter_text_files(base, ignore))
+
+    for fp in files:
         try:
             text = fp.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             continue
+
+        # If someone committed a .env file, raise a warning (even if it has no match)
+        if fp.name == ".env":
+            findings.append({
+                "rule_id": "SEC-DOTENV",
+                "title": ".env file detected (may contain secrets)",
+                "severity": "medium",
+                "file": str(fp),
+                "line": 1,
+                "evidence_masked": ".env",
+                "recommendation": "Remove .env from repo and add it to .gitignore. Rotate any exposed values.",
+            })
 
         for line_no, line in enumerate(text.splitlines(), start=1):
             for rule in RULES:
@@ -51,7 +52,6 @@ def scan_secrets(base: Path) -> List[Dict[str, Any]]:
 
 
 def mask_evidence(val: str) -> str:
-    # Never print a full secret. Show only a small hint.
     if len(val) <= 6:
         return "*" * len(val)
     return f"{val[:3]}***{val[-3:]}"

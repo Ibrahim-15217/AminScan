@@ -1,0 +1,4 @@
+# Extra ignore patterns for AminScan (optional)
+# Example:
+# **/coverage/**
+# **/*.pem
