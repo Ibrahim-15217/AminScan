@@ -45,6 +45,7 @@ def main() -> None:
 
     scan = sub.add_parser("scan", help="Scan a folder for leaked secrets (basic)")
     scan.add_argument("--path", default=".", help="Path to scan (default: .)")
+    scan.add_argument("--no-entropy", action="store_true", help="Disable entropy-based heuristic detection")
     scan.add_argument(
         "--fail-on",
         choices=["low", "medium", "high", "critical"],
@@ -59,7 +60,7 @@ def main() -> None:
     if not base.exists():
         raise SystemExit(f"Path not found: {base}")
 
-    findings = scan_secrets(base)
+    findings = scan_secrets(base, use_entropy=not args.no_entropy)
 
     # Console output (human-friendly)
     if not findings:
