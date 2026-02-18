@@ -8,6 +8,7 @@ extra_ignores:
   - "**/.next/**"
 
 
+
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -53,3 +54,21 @@ jobs:
           pip install -e ".[dev]"
           pytest -q
 
+
+
+
+---
+
+## 13.3 Add LICENSE (recommended)
+Pick one:
+- **MIT** (simple, very common)
+- **Apache-2.0** (also common, includes patent license)
+
+If you want the fastest: use **MIT**.
+
+Create `LICENSE` file:
+```powershell
+ni LICENSE
+```
+
+Then add the text of the license you chose. For MIT, use:
