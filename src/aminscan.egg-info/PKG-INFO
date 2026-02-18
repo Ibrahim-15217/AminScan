@@ -6,3 +6,5 @@ Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 Requires-Dist: requests>=2.31.0
 Requires-Dist: PyYAML>=6.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"

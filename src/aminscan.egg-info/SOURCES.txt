@@ -3,6 +3,7 @@ pyproject.toml
 src/aminscan/__init__.py
 src/aminscan/__main__.py
 src/aminscan/cli.py
+src/aminscan/config.py
 src/aminscan/entropy.py
 src/aminscan/file_utils.py
 src/aminscan/secrets_rules.py

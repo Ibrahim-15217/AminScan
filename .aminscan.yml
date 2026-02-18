@@ -47,3 +47,9 @@ jobs:
           path: |
             aminscan-report.md
             aminscan-report.json
+
+          name: Run unit tests
+        run: |
+          pip install -e ".[dev]"
+          pytest -q
+
