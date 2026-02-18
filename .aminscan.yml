@@ -6,3 +6,44 @@ out_json: aminscan-report.json
 extra_ignores:
   - "**/coverage/**"
   - "**/.next/**"
+
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install AminScan
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run AminScan (uses .aminscan.yml)
+        run: |
+          aminscan scan --path .
+
+      - name: Add report to Job Summary
+        if: always()
+        run: |
+          echo "## AminScan Report" >> $GITHUB_STEP_SUMMARY
+          if [ -f aminscan-report.md ]; then
+            cat aminscan-report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No Markdown report found. Set out_md in .aminscan.yml (e.g., aminscan-report.md)." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aminscan-reports
+          path: |
+            aminscan-report.md
+            aminscan-report.json
