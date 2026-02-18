@@ -3,8 +3,13 @@ pyproject.toml
 src/aminscan/__init__.py
 src/aminscan/__main__.py
 src/aminscan/cli.py
+src/aminscan/entropy.py
+src/aminscan/file_utils.py
+src/aminscan/secrets_rules.py
+src/aminscan/secrets_scanner.py
 src/aminscan.egg-info/PKG-INFO
 src/aminscan.egg-info/SOURCES.txt
 src/aminscan.egg-info/dependency_links.txt
 src/aminscan.egg-info/entry_points.txt
+src/aminscan.egg-info/requires.txt
 src/aminscan.egg-info/top_level.txt

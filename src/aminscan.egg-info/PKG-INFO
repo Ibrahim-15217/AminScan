@@ -1,6 +1,7 @@
 Metadata-Version: 2.4
 Name: aminscan
-Version: 0.0.1
+Version: 0.0.2
 Summary: AminScan: Secrets & Misconfig Scanner for CI
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from .web_scanner import scan_web
+
 
 import argparse
 import sys
@@ -46,6 +48,7 @@ def main() -> None:
     scan = sub.add_parser("scan", help="Scan a folder for leaked secrets (basic)")
     scan.add_argument("--path", default=".", help="Path to scan (default: .)")
     scan.add_argument("--no-entropy", action="store_true", help="Disable entropy-based heuristic detection")
+    scan.add_argument("--url", default=None, help="Optional URL to scan for basic web misconfigurations")
     scan.add_argument(
         "--fail-on",
         choices=["low", "medium", "high", "critical"],
@@ -61,6 +64,10 @@ def main() -> None:
         raise SystemExit(f"Path not found: {base}")
 
     findings = scan_secrets(base, use_entropy=not args.no_entropy)
+
+    if args.url:
+        web_findings = scan_web(args.url)
+        findings.extend(web_findings)
 
     # Console output (human-friendly)
     if not findings:
