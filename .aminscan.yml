@@ -1,13 +1,9 @@
-fail_on: high
-entropy: true
-url: null
-out_md: aminscan-report.md
-out_json: aminscan-report.json
-extra_ignores:
-  - "**/coverage/**"
-  - "**/.next/**"
+name: AminScan
 
-
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
 
 jobs:
   scan:
@@ -25,6 +21,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
+
+      - name: Run unit tests
+        run: |
+          pip install -e ".[dev]"
+          pytest -q
 
       - name: Run AminScan (uses .aminscan.yml)
         run: |
@@ -48,27 +49,3 @@ jobs:
           path: |
             aminscan-report.md
             aminscan-report.json
-
-          name: Run unit tests
-        run: |
-          pip install -e ".[dev]"
-          pytest -q
-
-
-
-
----
-
-## 13.3 Add LICENSE (recommended)
-Pick one:
-- **MIT** (simple, very common)
-- **Apache-2.0** (also common, includes patent license)
-
-If you want the fastest: use **MIT**.
-
-Create `LICENSE` file:
-```powershell
-ni LICENSE
-```
-
-Then add the text of the license you chose. For MIT, use:
