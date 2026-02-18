@@ -28,6 +28,5 @@ jobs:
 
       - name: Add report to Job Summary
         if: always()
-        run: |
-          echo "## AminScan Report" >> $GITHUB_STEP_SUMMARY
-          cat aminscan-report.md >> $GITHUB_STEP_SUMMARY
+        run: aminscan scan --path . --fail-on high --out-md aminscan-report.md --out-json aminscan-report.json
+
