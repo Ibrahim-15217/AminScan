@@ -17,16 +17,35 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install AminScan (editable)
+      - name: Install AminScan
         run: |
           python -m pip install --upgrade pip
           pip install -e .
 
-      - name: Run AminScan
+      - name: Run unit tests
         run: |
-          aminscan scan --path . --fail-on high --out aminscan-report.md
+          pip install -e ".[dev]"
+          pytest -q
+
+      - name: Run AminScan (uses .aminscan.yml)
+        run: |
+          aminscan scan --path .
 
       - name: Add report to Job Summary
         if: always()
-        run: aminscan scan --path . --fail-on high --out-md aminscan-report.md --out-json aminscan-report.json
+        run: |
+          echo "## AminScan Report" >> $GITHUB_STEP_SUMMARY
+          if [ -f aminscan-report.md ]; then
+            cat aminscan-report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No Markdown report found. Set out_md in .aminscan.yml (e.g., aminscan-report.md)." >> $GITHUB_STEP_SUMMARY
+          fi
 
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aminscan-reports
+          path: |
+            aminscan-report.md
+            aminscan-report.json
