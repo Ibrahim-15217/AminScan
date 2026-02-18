@@ -7,9 +7,10 @@ from .entropy import TOKEN_RE, looks_like_high_entropy_token
 from .file_utils import iter_text_files, load_ignore_patterns
 from .secrets_rules import RULES
 
-def scan_secrets(base: Path, use_entropy: bool = True) -> List[Dict[str, Any]]:
+def scan_secrets(base: Path, use_entropy: bool = True, extra_ignores: List[str] | None = None) -> List[Dict[str, Any]]:
     findings: List[Dict[str, Any]] = []
-    ignore = load_ignore_patterns(base)
+    extra_ignores = extra_ignores or []
+    ignore = load_ignore_patterns(base, extra_ignores)
     files = list(iter_text_files(base, ignore))
 
     for fp in files:

@@ -8,6 +8,8 @@ from pathlib import Path
 
 from .secrets_scanner import scan_secrets
 from .web_scanner import scan_web
+from .config import load_config
+
 
 SEVERITY_ORDER = {"low": 1, "medium": 2, "high": 3, "critical": 4}
 
@@ -127,6 +129,28 @@ def main() -> None:
 
     if args.url:
         findings.extend(scan_web(args.url))
+
+    cfg = load_config(base)
+        # If user didn't pass --url, use config url
+    if not args.url and cfg.url:
+            args.url = cfg.url
+
+        # If user didn't pass output paths, use config outputs
+    if not args.out_md and cfg.out_md:
+            args.out_md = cfg.out_md
+    if not args.out_json and cfg.out_json:
+            args.out_json = cfg.out_json
+
+        # If user didn't override fail-on, use config fail_on
+        # (Here, default is "high", so if they kept default, config can replace it)
+    if args.fail_on == "high" and cfg.fail_on:
+            args.fail_on = cfg.fail_on
+
+        # Entropy: config decides default; CLI flag --no-entropy disables regardless
+    entropy_enabled = cfg.entropy and (not args.no_entropy)
+
+    findings = scan_secrets(base, use_entropy=entropy_enabled, extra_ignores=cfg.extra_ignores)
+
 
     # Console output
     if not findings:

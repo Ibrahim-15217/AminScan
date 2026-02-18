@@ -25,10 +25,7 @@ TEXT_EXTS = {
 }
 
 
-def load_ignore_patterns(base: Path) -> List[str]:
-    """
-    Loads ignore patterns from DEFAULT_IGNORES and optional .aminscanignore file.
-    """
+def load_ignore_patterns(base: Path, extra: List[str] | None = None) -> List[str]:
     patterns = list(DEFAULT_IGNORES)
     ignore_file = base / ".aminscanignore"
     if ignore_file.exists():
@@ -37,7 +34,12 @@ def load_ignore_patterns(base: Path) -> List[str]:
             if not line or line.startswith("#"):
                 continue
             patterns.append(line)
+
+    if extra:
+        patterns.extend(extra)
+
     return patterns
+
 
 
 def is_ignored(rel_posix: str, patterns: List[str]) -> bool:

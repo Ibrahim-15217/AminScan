@@ -1,0 +1,8 @@
+fail_on: high
+entropy: true
+url: null
+out_md: aminscan-report.md
+out_json: aminscan-report.json
+extra_ignores:
+  - "**/coverage/**"
+  - "**/.next/**"

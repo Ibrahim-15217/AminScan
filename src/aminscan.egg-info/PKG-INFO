@@ -5,3 +5,4 @@ Summary: AminScan: Secrets & Misconfig Scanner for CI
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 Requires-Dist: requests>=2.31.0
+Requires-Dist: PyYAML>=6.0.1

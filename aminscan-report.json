@@ -4,7 +4,7 @@
   "meta": {
     "scanned_path": "C:\\Users\\Dell\\Desktop\\AminScan",
     "url": null,
-    "entropy_enabled": true
+    "entropy_enabled": false
   },
   "summary": {
     "by_severity": {},
