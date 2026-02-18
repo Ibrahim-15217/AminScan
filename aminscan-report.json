@@ -1,0 +1,15 @@
+{
+  "tool": "AminScan",
+  "version": "0.0.4",
+  "meta": {
+    "scanned_path": "C:\\Users\\Dell\\Desktop\\AminScan",
+    "url": null,
+    "entropy_enabled": true
+  },
+  "summary": {
+    "by_severity": {},
+    "by_category": {},
+    "total": 0
+  },
+  "findings": []
+}
